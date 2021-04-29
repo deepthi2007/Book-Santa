@@ -5,13 +5,15 @@ import WelcomeScreen from './Screens/WelcomeScreen';
 import TabNavigator from './Components/TabNavigator'
 import {createSwitchNavigator,createAppContainer} from 'react-navigation'
 
+/* login credentials
+userid : abc@gmail.com
+password: abc123 */
 
 export default class App extends React.Component {
  render(){
    return(
-     <View>
-       <AppContainer/>
-     </View>
+      <AppContainer/>
+    
    )
  }
 }

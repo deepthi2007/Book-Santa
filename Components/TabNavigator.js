@@ -5,7 +5,7 @@ import BookRequestScreen from '../Screens/BookRequestScreen'
 
 const TabNavigator = createBottomTabNavigator({
     Donate:{screen:BookDonateScreen},
-    Request:{screens:BookRequestScreen}
+    Request:{screen:BookRequestScreen}
 })
 
 export default TabNavigator

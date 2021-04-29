@@ -251,7 +251,8 @@ const styles = StyleSheet.create({
    fontSize:65,
    fontWeight:'300',
    paddingBottom:30,
-   color : '#ff3d00'
+   color : '#ff3d00',
+   fontWeight:"bold"
  },
  loginBox:{
    width: 300,
