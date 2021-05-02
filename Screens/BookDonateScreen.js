@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Text , View , FlatList } from 'react-native'
-import {ListItem} from 'react-native-elements'
+import {List , Divider} from 'react-native-paper'
 import db from '../Config'
 import firebase from 'firebase'
 import AppHeader from '../Components/AppHeader'
@@ -16,32 +16,27 @@ constructor(){
 }
 
 getRequests=async()=>{
-  var Requests= db.collection("requested_book").get()
+ var Requests= await db.collection("requested_book").get()
 
   Requests.docs.map((doc)=>{
       var bookRequests = doc.data()
+      console.log(bookRequests)
       this.setState({allRequests:bookRequests})
   })
 }
 
-showFlatList=()=>{
+showFlatList=(item,index)=>{
     return(
-      /*   <ListItem 
-        key={i} 
-        title={this.state.allRequests.bookName} 
-        subtitle={this.state.allRequests.reason} 
-        titleStyle={{ color: 'black', fontWeight: 'bold' }} 
-        rightElement={ 
-           <TouchableOpacity > 
+        <View style={{marginTop:20}}>
+        <List.Item
+    title={item.bookName}
+    description={item.reason}
+  />
+  <TouchableOpacity > 
            <Text style={{color:'black'}}>View</Text> 
-           </TouchableOpacity> } 
-        bottomDivider /> */
-        <View>
-            <Text 
-            style={{ color: 'black', fontWeight: 'bold' }}>
-                {this.state.allRequests.bookName}</Text>
-            <Text>{this.state.allRequests.reason}</Text>
-        </View>
+           </TouchableOpacity>
+           <Divider/>
+           </View>
     )
 }
 
@@ -51,12 +46,17 @@ componentDidMount=()=>{
 
     render(){
         return(
-            <View>
+            <View style={{ flex:1, fontSize: 20, justifyContent:'center', alignItems:'center'  }}>
                 <AppHeader header="Donate Book"/>
-                <FlatList
+                {console.log(this.state.allRequests)}
+                {this.state.allRequests.length===0
+                ? (<Text>List of All Requested Books</Text>)
+            :
+               ( <FlatList
                 data={this.state.allRequests}
-                renderItem={this.showFlatList()}
+                renderItem={this.showFlatList}
                 keyExtractor={(item,index)=>{index.toString()}}></FlatList>
+   )}
             </View>
         ) 
     }

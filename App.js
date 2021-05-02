@@ -1,9 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import WelcomeScreen from './Screens/WelcomeScreen';
 import TabNavigator from './Components/TabNavigator'
 import {createSwitchNavigator,createAppContainer} from 'react-navigation'
+import DrawerNavigator from './Components/DrawerNavigator'
 
 /* login credentials
 userid : abc@gmail.com
@@ -20,16 +20,7 @@ export default class App extends React.Component {
 
 const SwitchNavigator = createSwitchNavigator({
 Welcome:{screen:WelcomeScreen},
-TabNavigator:{screen:TabNavigator}
+DrawerNavigator:{screen:DrawerNavigator}
 })
 
 const AppContainer = createAppContainer(SwitchNavigator)
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
