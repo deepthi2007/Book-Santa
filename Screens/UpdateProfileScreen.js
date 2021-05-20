@@ -7,6 +7,8 @@ import {Text ,
      KeyboardAvoidingView , 
     StyleSheet} from 'react-native'
 import AppHeader from '../Components/AppHeader'
+import db from '../Config'
+import firebase from 'firebase'
 
 export default class UpdateProfileScreen extends React.Component{
 constructor(){
@@ -16,9 +18,50 @@ constructor(){
       lastName:'',
       address:'',
       contact:'',
-      email:""
+      email:"",
+      userId:firebase.auth().currentUser.email,
+      docId:""
     }
 }
+
+updateData=async()=>{
+  console.log(this.state.docId)
+   db.collection("users").doc(this.state.docId).update({
+     "first_name":this.state.firstName,
+     "last_name":this.state.lastName,
+     "address":this.state.address,
+     "contact":this.state.contact
+   })
+   alert("Your Profile is updated")
+}
+
+ReadData=async()=>{
+  console.log(this.state.userId)
+var query= await db.collection("users").where("email_id","==",this.state.userId)
+.get().then((snapShot)=>{
+
+//console.log(this.state.userId)
+
+snapShot.forEach((doc)=>{
+  //console.log("deepthi")  
+  var users = doc.data()
+  var Id = doc.id
+  this.setState({ firstName:users.first_name,
+                  lastName : users.last_name,
+                address: users.address,
+                  contact:users.contact,
+                   email: users.email_id,
+                  docId:Id})
+                   
+console.log(Id)
+})
+})
+}
+
+componentDidMount=()=>{
+this.ReadData()
+}
+
     render(){
         return(
             <View>
@@ -34,6 +77,7 @@ constructor(){
                     firstName: text
                   })
                 }}
+                value={this.state.firstName}
               />
               <TextInput
                 style={styles.formTextInput}
@@ -44,6 +88,7 @@ constructor(){
                     lastName: text
                   })
                 }}
+                value={this.state.lastName}
               />
               <TextInput
                 style={styles.formTextInput}
@@ -55,6 +100,7 @@ constructor(){
                     contact: text
                   })
                 }}
+                value={this.state.contact}
               />
               <TextInput
                 style={styles.AddressTextInput}
@@ -65,19 +111,11 @@ constructor(){
                     address: text
                   })
                 }}
-              />
-              <TextInput
-                style={styles.formTextInput}
-                placeholder ={"Email"}
-                keyboardType ={'email-address'}
-                onChangeText={(text)=>{
-                  this.setState({
-                    emailId: text
-                  })
-                }}
+                value={this.state.address}
               />
               <TouchableOpacity
             style={styles.button}
+            onPress={()=>{this.updateData()}}
           >
           <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
