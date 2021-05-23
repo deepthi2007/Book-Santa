@@ -13,18 +13,21 @@ constructor(){
         donorId:firebase.auth().currentUser.email,
         allDonations:[]
     }
+    this.requestref=null
 }
 
 
 getMyDonations = async()=>{
-    await db.collection("my_Donations").where("donor_id","==",this.state.donorId)
+  this.requestref=  await db.collection("my_Donations").where("donor_id","==",this.state.donorId)
     .onSnapshot((response)=>{
         console.log(this.state.donorId)
+        var donations=[]
         response.forEach((doc)=>{
-            var donations=doc.data()
+        donations.push(doc.data())
+        })
+        
         this.setState({allDonations:donations})
         console.log(donations)
-        })
     })
 }
 
@@ -37,6 +40,10 @@ changeStatus = async()=>{
 
 componentDidMount=()=>{
     this.getMyDonations()
+}
+
+componentWillUnmount=()=>{
+    this.requestref
 }
 
 keyExtractor=(item,index)=>{

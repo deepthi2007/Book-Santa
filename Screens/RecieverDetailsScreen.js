@@ -12,8 +12,8 @@ constructor(props){
     this.state={
         bookName:this.props.navigation.getParam('bookDetails')["bookName"],
         reason:  this.props.navigation.getParam('bookDetails')["reason"],
-       requestId:this.props.navigation.getParam('bookDetails')["request_id"],
-    recieverId : this.props.navigation.getParam('bookDetails')["user_id"],
+        requestId:this.props.navigation.getParam('bookDetails')["request_id"],
+        recieverId : this.props.navigation.getParam('bookDetails')["user_id"],
         recieverName:"",
         contact:"",
         address:"",
@@ -48,7 +48,7 @@ addNotification=async()=>{
     await db.collection("all_notifications").add({
         "targeted_userId":this.state.recieverId,
         "donor_userId":this.state.userId,
-        "message":this.state.userName + "Has Shown Interest in Donating The Book",
+        "message":this.state.userName +" "+ "Has Shown Interest in Donating The Book",
         "request_id":this.state.requestId,
         "book_name":this.state.bookName,
         "date":firebase.firestore.FieldValue.serverTimestamp(),
