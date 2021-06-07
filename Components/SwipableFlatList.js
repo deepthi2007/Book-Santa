@@ -1,4 +1,118 @@
-import * as React from 'react'
+import React, { Component } from "react";
+import {
+  Animated,
+  Dimensions,
+  StyleSheet,
+  Text,
+  View
+} from "react-native";
+import { ListItem, Icon } from "react-native-elements";
+import {List , Divider} from 'react-native-paper'
+import { SwipeListView } from "react-native-swipe-list-view";
+
+import db from "../Config";
+
+export default class SwipeableFlatlist extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      allNotifications: this.props.allNotifications
+    };
+  }
+
+  updateMarkAsread = notification => {
+    db.collection("all_notifications")
+      .doc(notification.doc_id)
+      .update({
+        "status": "read"
+      });
+  };
+
+  onSwipeValueChange = swipeData => {
+    var allNotifications = this.state.allNotifications;
+    const { key, value } = swipeData;
+    if (value < -Dimensions.get("window").width) {
+      const newData = [...allNotifications];
+      this.updateMarkAsread(allNotifications[key]);
+      newData.splice(key, 1);
+      this.setState({ allNotifications: newData });
+    }
+  };
+
+  renderItem = data => (
+    <Animated.View>
+      <List.Item
+        title={data.item.book_name}
+        titleStyle={{ color: "black", fontWeight: "bold" }}
+        description={data.item.message}
+      />
+      <Divider/>
+    </Animated.View>
+  );
+
+  renderHiddenItem = () => (
+    <View style={styles.rowBack}>
+      <View style={[styles.backRightBtn, styles.backRightBtnRight]}>
+        <Text style={styles.backTextWhite}>Mark as read</Text>
+      </View>
+    </View>
+  );
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <SwipeListView
+          disableRightSwipe
+          data={this.state.allNotifications}
+          renderItem={this.renderItem}
+          renderHiddenItem={this.renderHiddenItem}
+          rightOpenValue={-Dimensions.get("window").width}
+          previewRowKey={"0"}
+          previewOpenValue={-40}
+          previewOpenDelay={3000}
+          onSwipeValueChange={this.onSwipeValueChange}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    flex: 1
+  },
+  backTextWhite: {
+    color: "#FFF",
+    fontWeight: "bold",
+    fontSize: 15,
+    textAlign: "center",
+    alignSelf: "flex-start"
+  },
+  rowBack: {
+    alignItems: "center",
+    backgroundColor: "#29b6f6",
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingLeft: 15
+  },
+  backRightBtn: {
+    alignItems: "center",
+    bottom: 0,
+    justifyContent: "center",
+    position: "absolute",
+    top: 0,
+    width: 100
+  },
+  backRightBtnRight: {
+    backgroundColor: "#29b6f6",
+    right: 0
+  }
+});
+
+/* import * as React from 'react'
 import {Dimensions , View , Text , StyleSheet , Animated} from 'react-native'
 import {SwipeListView} from 'react-native-swipe-list-view'
 import {ListItem , Icon } from 'react-native-elements'
@@ -16,14 +130,13 @@ export default class SwipableFlatList extends React.Component{
         console.log(this.state.allNotifications)
     }
 
-    renderItem=({data,index})=>{
-        {console.log(data)}
+    renderItem=({item,index})=>{
             <Animated.View>
                <ListItem
         leftElement={<Icon name="book" type="font-awesome" color="#696969" />}
-        title={data.book_name}
+        title={item.book_name}
         titleStyle={{ color: "black", fontWeight: "bold" }}
-        subtitle={data.message}
+        subtitle={item.message}
         bottomDivider
       />
             </Animated.View>
@@ -65,11 +178,12 @@ export default class SwipableFlatList extends React.Component{
                 disableRightSwipe
                 data={this.state.allNotifications}
                 renderItem={this.renderItem}
-                keyExtractor={(item,index)=>{index.toString()}}
+                keyExtractor={(item,index)=>{index.toString()
+                console.log(item)}}
                 renderHiddenItem={this.renderHiddenItem}
                 rightOpenValue={-Dimensions.get('window').width}
                 onSwipeValueChange={this.onSwipeValueChange}
-                previewRowKey={0}
+                previewRowKey={"0"}
                 previewOpenValue={-40}
                 previewOpenDelay={3000}></SwipeListView>
             </View>
@@ -104,4 +218,4 @@ const styles = StyleSheet.create({
         textAlign:"center",
         alignSelf:"flex-start"
     }
-})
+})  */

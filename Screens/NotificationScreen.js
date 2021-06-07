@@ -24,10 +24,13 @@ export default class NotificationScreen extends React.Component{
         .where("status","==","unread").onSnapshot((response)=>{
             var notification = []
             response.forEach((doc)=>{
-                 notification.push(doc.data())
-                            })
+                var notifications = doc.data()
+                notifications["doc_id"]=doc.id
+                 notification.push(notifications)
+        })
             
             this.setState({allNotifications:notification})
+            console.log(notification)
         })
     }
 

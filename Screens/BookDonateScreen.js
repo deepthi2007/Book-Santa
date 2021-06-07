@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Text , View , FlatList , TouchableOpacity} from 'react-native'
+import {Text , View , FlatList , TouchableOpacity, Image} from 'react-native'
 import {List , Divider} from 'react-native-paper'
 import db from '../Config'
 import firebase from 'firebase'
@@ -36,6 +36,11 @@ renderItem=({item,index})=>{
     return(
         <View>
         <View style={{marginTop:20,flexDirection:"row",justifyContent:"space-between"}}>
+        <Image
+        source={{
+            uri:item.image_link
+        }}
+        style={{width:50,height:50}}/>
         <List.Item
         key={index}
         title={item.bookName}

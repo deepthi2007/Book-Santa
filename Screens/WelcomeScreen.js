@@ -33,7 +33,7 @@ export default class WelcomeScreen extends Component{
 
   userSignUp = (emailId, password,confirmPassword) =>{
    if(password !== confirmPassword){
-       return Alert.alert("password doesn't match\nCheck your password.")
+       return Alert.alert("password doesn't match ,Check your password.")
    }else{
      firebase.auth().createUserWithEmailAndPassword(emailId, password)
      .then(()=>{
@@ -42,7 +42,8 @@ export default class WelcomeScreen extends Component{
          last_name:this.state.lastName,
          contact:this.state.contact,
          email_id:this.state.emailId,
-         address:this.state.address
+         address:this.state.address,
+         isBookRequestActive:true
        })
        return  Alert.alert(
             'User Added Successfully',

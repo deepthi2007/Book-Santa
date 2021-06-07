@@ -11,9 +11,20 @@ constructor(){
     super()
     this.state={
         donorId:firebase.auth().currentUser.email,
-        allDonations:[]
+        allDonations:[],
+        donorName:""
     }
     this.requestref=null
+}
+
+getDonorDetails=async()=>{
+    await db.collection("users").where("email_id","==",this.state.donorId)
+    .get().then((response)=>{
+        response.forEach((doc)=>{
+            var details = doc.data()
+            this.setState({donorName:details.first_name+" "+details.last_name})
+        })
+    })
 }
 
 
@@ -23,7 +34,9 @@ getMyDonations = async()=>{
         console.log(this.state.donorId)
         var donations=[]
         response.forEach((doc)=>{
-        donations.push(doc.data())
+            var donation = doc.data()
+            donation["doc_id"]=doc.id
+        donations.push(donation)
         })
         
         this.setState({allDonations:donations})
@@ -31,15 +44,48 @@ getMyDonations = async()=>{
     })
 }
 
-changeStatus = async()=>{
-    await db.collection("my_Donations").where("donor_id","==",this.state.donorId)
+sendNotification=async(bookDetails,status)=>{
+    var requestId = bookDetails.request_id
+    var donorId = bookDetails.donor_id
+
+    await db.collection("all_notifications").where("request_id","==",requestId).where("donor_userId","==",donorId)
+    .get().then((response)=>{
+        response.forEach((doc)=>{
+            var message=""
+            if(status==="DONOR INTERSTED"){
+                message=this.state.donorName+" "+"has Shown Interest in Donating The Book"
+            }else{
+                message = this.state.donorName+" "+"has sent the book."
+                console.log(message)
+            }
+             db.collection("all_notifications").doc(doc.id).update({
+                "message":message,
+                "date":firebase.firestore.FieldValue.serverTimestamp(),
+                "status":"unread"
+            })
+        })
+    })
+}
+
+sendBook = async(bookDetails)=>{
+    if(bookDetails.status==="DONOR INTERESTED"){
+        await db.collection("my_Donations").doc(bookDetails.doc_id)
     .update({
         "status":"BOOK SENT"
     })
+    this.sendNotification(bookDetails,bookDetails.status)
+    }else{
+        await db.collection("my_Donations").doc(bookDetails.doc_id)
+    .update({
+        "status":"DONOR INTERESTED"
+    })
+    this.sendNotification(bookDetails,bookDetails.status)
+    }
 }
 
 componentDidMount=()=>{
     this.getMyDonations()
+    this.getDonorDetails()
 }
 
 componentWillUnmount=()=>{
@@ -59,8 +105,15 @@ return(
     title={item.book_name}
     description={item.requested_by +" "+ item.status}/>
     <TouchableOpacity
-    style={{borderWidth:1,width:70,height:40}}>
-        <Text>Send Book</Text>
+    onPress={()=>{this.sendBook(item)}}
+    style={[{borderWidth:1,width:70,height:40},{
+        backgroundColor:item.status==="DONOR INTERESTED"
+        ?("orange")
+        :("green")
+    }]}>
+        <Text>{item.status==="DONOR INTERESTED"
+              ?("Send Book")
+            :("Book Sent")}</Text>
     </TouchableOpacity>
     </View>
     <Divider/>

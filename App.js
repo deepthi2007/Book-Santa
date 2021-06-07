@@ -5,9 +5,12 @@ import {createSwitchNavigator,createAppContainer} from 'react-navigation'
 import DrawerNavigator from './Components/DrawerNavigator'
 import TabNavigator from './Components/TabNavigator'
 
-/* login credentials
+/* login credentials 1
 userid : abc@gmail.com
 password: abc123 */
+/* login creadentials 2
+userid : xyz@gmail.com
+password : xyz123 */
 
 export default class App extends React.Component {
  render(){
